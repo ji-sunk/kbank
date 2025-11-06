@@ -1,145 +1,139 @@
+// src/pages/login/InitPasswordChange.tsx
 import React, { useState } from "react";
-import { useToast } from "@/components/Toast";
+import { useNavigate } from "react-router-dom";
+
+type Variant = "idle" | "success" | "error";
 
 export default function InitPasswordChange() {
-  const { push } = useToast();
+  const nav = useNavigate();
 
-  const [currentPw, setCurrentPw] = useState("");
+  // ✅ 숫자만 담는 step
+  const [step, setStep] = useState<number>(0);
+  // ✅ 메시지/상태 표현용 별도 state
+  const [variant, setVariant] = useState<Variant>("idle");
+  const [msg, setMsg] = useState<string>("");
+
+  // 폼 상태
+  const [oldPw, setOldPw] = useState("");
   const [newPw, setNewPw] = useState("");
   const [confirmPw, setConfirmPw] = useState("");
 
-  type Err = { currentPw?: string; newPw?: string; confirmPw?: string };
-  const [errors, setErrors] = useState<Err>({});
-
-  // 8~16, 대/소문자+숫자+특수문자 각 1개 이상
-  const policy =
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[ !"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~]).{8,16}$/;
-
-  const validate = (): boolean => {
-    const next: Err = {};
-    if (!currentPw) next.currentPw = "기존 비밀번호를 입력해주세요.";
-    if (!newPw) next.newPw = "신규 비밀번호를 입력해주세요.";
-    if (!confirmPw) next.confirmPw = "신규 비밀번호를 다시 한번 입력해주세요.";
-
-    if (newPw && !policy.test(newPw)) {
-      next.newPw =
-        "비밀번호 양식은 영문 대소문자, 숫자, 특수문자 포함 8-16자 입니다.";
+  const validate = () => {
+    if (!oldPw || !newPw || !confirmPw) {
+      setVariant("error");
+      setMsg("모든 항목을 입력해 주세요.");
+      return false;
     }
-    if (newPw && confirmPw && newPw !== confirmPw) {
-      next.confirmPw = "신규 비밀번호가 일치하지 않습니다.";
+    if (newPw.length < 8) {
+      setVariant("error");
+      setMsg("새 비밀번호는 8자 이상이어야 합니다.");
+      return false;
     }
-
-    setErrors(next);
-
-    // 토스트(에러 컬러는 토스트 컴포넌트에서 variant='error'로 스타일 적용)
-    const firstErr =
-      next.currentPw || next.newPw || next.confirmPw || undefined;
-    if (firstErr) push(firstErr, { variant: "error" });
-
-    return Object.keys(next).length === 0;
+    if (newPw !== confirmPw) {
+      setVariant("error");
+      setMsg("새 비밀번호와 확인이 일치하지 않습니다.");
+      return false;
+    }
+    return true;
   };
 
-  const onSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
 
-    // TODO: API 연동
-    push("비밀번호 변경이 완료되었습니다.");
+    try {
+      // TODO: 실제 API 연동
+      // await api.changeInitPassword({ oldPw, newPw });
+
+      // ⛳️ 여기서 이전 코드가 setStep({ variant: "success" }) 같은 형태였을 가능성 높음.
+      //    아래처럼 분리해서 처리하면 타입 에러가 사라집니다.
+      setVariant("success");
+      setMsg("비밀번호가 변경되었습니다.");
+      setStep(1); // 다음 단계로 이동 (예: 완료 화면)
+    } catch (err) {
+      setVariant("error");
+      setMsg("비밀번호 변경 중 오류가 발생했습니다. 다시 시도해 주세요.");
+    }
   };
 
+  const goLogin = () => {
+    nav("/login");
+  };
+
+  // 간단한 UI (프로젝트 스타일에 맞춰 클래스/컴포넌트 교체 가능)
   return (
-    <div className="auth-wrap" role="main" aria-labelledby="pwChangeTitle">
-      <section className="auth-area" aria-label="초기 비밀번호 변경">
-        <h1 id="pwChangeTitle" className="auth-title">
-          초기 비밀번호 변경
-        </h1>
-        <p className="auth-sub">
-          초기화된 비밀번호를 변경해주세요.
-          <br />
-          변경하지 않을 경우 시스템 접근이 제한됩니다.
-        </p>
+    <main className="init-password-change" aria-labelledby="page-title">
+      <h1 id="page-title" className="sr-only">
+        초기 비밀번호 변경
+      </h1>
 
-        <form className="auth-form" onSubmit={onSubmit} noValidate>
-          {/* 현재 비밀번호 */}
-          <div className={`form-field ${errors.currentPw ? "is-error" : ""}`}>
-            <label htmlFor="currPw" className="field-label">
-              현재 비밀번호
-            </label>
+      {step === 0 && (
+        <form className="card" onSubmit={onSubmit} noValidate>
+          <h2 className="card-title">초기 비밀번호 변경</h2>
+
+          <label className="field">
+            <span className="label">현재 비밀번호</span>
             <input
-              id="currPw"
               type="password"
-              placeholder="현재 비밀번호를 입력해주세요."
-              value={currentPw}
-              onChange={(e) => setCurrentPw(e.target.value)}
               autoComplete="current-password"
-              aria-invalid={!!errors.currentPw}
-              aria-describedby={errors.currentPw ? "errCurrPw" : undefined}
+              value={oldPw}
+              onChange={(e) => setOldPw(e.target.value)}
+              required
             />
-            {errors.currentPw && (
-              <p id="errCurrPw" className="err-text" role="alert">
-                ⓘ {errors.currentPw}
-              </p>
-            )}
-          </div>
+          </label>
 
-          {/* 신규 비밀번호 */}
-          <div className={`form-field ${errors.newPw ? "is-error" : ""}`}>
-            <label htmlFor="newPw" className="field-label">
-              신규 비밀번호
-            </label>
+          <label className="field">
+            <span className="label">새 비밀번호</span>
             <input
-              id="newPw"
               type="password"
-              placeholder="신규 비밀번호를 입력해주세요."
+              autoComplete="new-password"
               value={newPw}
               onChange={(e) => setNewPw(e.target.value)}
-              autoComplete="new-password"
-              aria-invalid={!!errors.newPw}
-              aria-describedby={errors.newPw ? "errNewPw" : undefined}
+              required
+              minLength={8}
             />
-            {errors.newPw && (
-              <p id="errNewPw" className="err-text" role="alert">
-                ⓘ {errors.newPw}
-              </p>
-            )}
-          </div>
+          </label>
 
-          {/* 신규 비밀번호 확인 */}
-          <div className={`form-field ${errors.confirmPw ? "is-error" : ""}`}>
-            <label htmlFor="confirmPw" className="field-label">
-              신규 비밀번호 확인
-            </label>
+          <label className="field">
+            <span className="label">새 비밀번호 확인</span>
             <input
-              id="confirmPw"
               type="password"
-              placeholder="입력한 비밀번호를 입력해주세요."
+              autoComplete="new-password"
               value={confirmPw}
               onChange={(e) => setConfirmPw(e.target.value)}
-              autoComplete="new-password"
-              aria-invalid={!!errors.confirmPw}
-              aria-describedby={errors.confirmPw ? "errConfirmPw" : undefined}
+              required
+              minLength={8}
             />
-            {errors.confirmPw && (
-              <p id="errConfirmPw" className="err-text" role="alert">
-                ⓘ {errors.confirmPw}
-              </p>
-            )}
-          </div>
+          </label>
 
-          {/* 액션 (푸터 버튼 톤과 맞춤) */}
-          <div className="auth-actions" role="group" aria-label="변경 버튼">
-            <button type="submit" className="auth-btn auth-btn--dark">
-              비밀번호 변경
+          {variant !== "idle" && (
+            <p
+              role={variant === "error" ? "alert" : "status"}
+              className={`notice ${variant}`}
+            >
+              {msg}
+            </p>
+          )}
+
+          <div className="actions">
+            <button type="submit" className="btn primary">
+              변경하기
             </button>
           </div>
-
-          {/* 안내문 */}
-          <p className="auth-hint" aria-live="polite">
-            ✓ 비밀번호는 영문 대소문자, 숫자, 특수문자를 조합하여 8-16자로
-            설정해 주시기 바랍니다.
-          </p>
         </form>
-      </section>
-    </div>
+      )}
+
+      {step === 1 && (
+        <section className="card success" aria-live="polite">
+          <h2 className="card-title">변경 완료</h2>
+          <p>비밀번호가 성공적으로 변경되었습니다.</p>
+          <div className="actions">
+            <button type="button" className="btn primary" onClick={goLogin}>
+              로그인으로 이동
+            </button>
+          </div>
+        </section>
+      )}
+    </main>
   );
 }

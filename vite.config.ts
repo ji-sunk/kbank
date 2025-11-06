@@ -5,11 +5,8 @@ import tsconfigPaths from "vite-tsconfig-paths";
 import svgr from "vite-plugin-svgr";
 
 export default defineConfig({
-  plugins: [
-    svgr({ svgrOptions: { icon: true } }), // ⬅️ react보다 앞에
-    react(),
-    tsconfigPaths(),
-  ],
+  base: "/kbank/",
+  plugins: [svgr({ svgrOptions: { icon: true } }), react(), tsconfigPaths()],
   resolve: { alias: { "@": "/src" } },
   server: { port: 5173 },
 });

@@ -1,0 +1,129 @@
+
+/* 아코디언메뉴 + Overlay */
+.overlay{
+  position:fixed;inset:0;background:var(--overlay);
+  opacity:0;pointer-events:none;transition:opacity .2s ease;
+  z-index:8;
+}
+.overlay.open{opacity:1;pointer-events:auto}
+
+/* Drawer (Left menu) */
+.drawer{
+  position:fixed;inset:0 auto 0 0;width:80%;max-width:320px;background:var(--surface);
+  transform:translateX(-100%);transition:transform .24s ease;z-index:9;
+  display:flex;flex-direction:column;border-right:1px solid var(--line);
+}
+.access {font-size: 12px; color: var(--darkgray);}
+.drawer.open{transform:translateX(0)}
+.drawer-header{display:flex;align-items:center;gap:8px;padding:16px 16px;
+  overflow: hidden;
+  .name {
+    font-size: 22px;
+    font-weight: 400;
+  }
+}
+.drawer-close{
+  padding:0;
+  display:flex;align-items:center;justify-content:center;
+  margin-left:auto;border:none;background:transparent;}
+.drawer-body{overflow:auto;padding-bottom:20px;
+  .txt {
+    margin-top:0;
+    font-size: .875rem;
+    color: #828282;
+    padding-left: 16px;
+  }
+}
+.drawer-footer{position:absolute; bottom:0; margin:16px;border:1px solid var(--line);background:#f2f2f2;border-radius:10px;padding:12px;text-align:center;color:#333}
+
+
+/* 아코디언 아이템 라벨/닷 정렬 */
+.acc-list .acc-item {
+  display: flex;
+  align-items: center;
+  padding: 10px 24px;
+  gap: 4px;
+  color: var(--ink);
+}
+
+/* 라벨 */
+.acc-list .acc-item .menu-label {
+  // flex: 1 1 auto;
+  flex: none;
+}
+
+/* 업데이트 */
+.acc-list .acc-item .badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background: var(--update);
+  // flex: 0 0 auto;
+  transform: translateY(-3px);
+}
+
+/* (옵션) 점에 펄스 효과 주고 싶으면 클래스 추가 */
+.acc-list .acc-item .badge-dot.pulse {
+  animation: noticePulse 1.6s ease-in-out infinite;
+}
+@keyframes noticePulse {
+  0%   { box-shadow: 0 0 0 0 rgba(255, 22, 79, 0.5); }
+  70%  { box-shadow: 0 0 0 6px rgba(255, 22, 79, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 22, 79, 0); }
+}
+
+/* Accordion */
+.acc-section {
+  border-top: 10px solid var(--line);
+  background: var(--surface);
+}
+
+.acc-header {
+  /* 버튼 기본 리셋 + 레이아웃 */
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 16px;
+  font: inherit;
+  font-size: 1rem;
+  font-weight: bold;
+  color: var(--ink);
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+
+  /* 포커스 접근성 */
+  &:focus-visible {
+    outline: 2px solid color-mix(in srgb, var(--ink) 30%, transparent);
+    outline-offset: 2px;
+    border-radius: 8px;
+  }
+}
+
+.acc-title { pointer-events: none; }
+
+.acc-arrow {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+  transition: transform .2s ease;
+  color: var(--ink); /* 아이콘이 currentColor면 색 적용됨 */
+  transform: rotate(-90deg);
+}
+
+/* 열릴 때 아이콘 회전 */
+.acc-section[aria-expanded="true"] .acc-arrow {
+  transform: rotate(0deg);
+}
+
+/* 기존 리스트 애니메이션 유지 */
+.acc-list {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height .24s ease;
+
+  &.open { max-height: 400px; }
+}
+

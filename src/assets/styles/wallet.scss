@@ -1,0 +1,158 @@
+// 전자지갑 관리
+
+/* 전자지갑 정보 */
+.walletInfo {
+    background-color: #fff;
+}
+.wallet-summary {
+    margin: 20px;
+    padding: 30px;
+    text-align: center;
+    background: var(--bg);
+    // border-radius: var(--radius);
+
+  &__bank,
+  &__top {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+  }
+
+  &__bank {
+    height: 34px;
+    // .bank-mark {
+    //   display: inline-grid;
+    //   place-items: center;
+    //   width: 22px; height: 22px;
+    //   border-radius: 999px;
+    //   background: #2d6cdf;
+    //   color: #fff; font-weight: 700; font-size: 12px;
+    // }
+    .bank-name { font-size: 14px; font-weight: 400; color: var(--darkgray); }
+  }
+
+  &__bottom {
+    margin-top: 20px;
+    text-align: center;
+
+    .caption {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--secondary);
+    }
+    .total {
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--darkgray);
+      .unit { font-size: 18px; font-weight: 700; margin-left: 2px; }
+    }
+  }
+}
+
+/* ===== 전자지갑 내역 관리 추가 ===== */
+
+/* 요약 하단 액션 버튼 */
+.wallet-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top:50px;
+
+  .wa-btn {
+    height: 50px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: .95rem;
+    cursor: pointer;
+
+    &--outline {
+      background: var(--surface);
+      border: 1px solid var(--line-border);
+      color: var(--ink);
+
+      &:hover { background: #fafafa; }
+      &:focus-visible { outline: 2px solid var(--primary-bl); outline-offset: 2px; }
+    }
+  }
+}
+
+/* 상단 기간/건수 라벨 */
+.tx-period {
+  margin: 10px 20px;
+  font-size: .875rem;
+  color: var(--secondary);
+  .date {
+    color: var(--secondary);
+    font-weight: 400;
+  }
+  .total {
+    color: var(--ink);
+    font-weight: 600;
+  }
+}
+
+/* 거래 섹션/리스트 */
+.tx-section {
+  margin-top: 16px;
+
+  &__label {
+    margin: 0 20px 8px;
+    font-size: 14px;
+    color: var(--muted);
+    font-weight: 400;
+  }
+}
+
+.tx-list {
+    padding:0;
+  display: grid;
+  gap: 0;
+  background: var(--surface);
+}
+
+.tx-item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  padding: 14px 20px;
+  border-top: 1px solid var(--line);
+
+  &:first-child { border-bottom: 1px solid var(--line); }
+//   &:last-child  { border-bottom: 1px solid var(--line); }
+
+  &__left {
+    min-width: 0;
+  }
+
+  .tx-bank {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+
+  .tx-meta {
+    font-size: .875rem;
+    color: var(--secondary);
+    .dot { color: var(--secondary); }
+  }
+
+  .tx-amount {
+    font-size: 16px;
+    font-weight: 800;
+    white-space: nowrap;
+
+    &.is-in  { color: var(--primary-bl); }  /* + 금액 */
+    &.is-out { color: var(--ink); }         /* - 금액 (디자인에 맞게 진하게) */
+  }
+}
+// 전자지갑 내역 관리
+.walletHistory {
+    background-color: var(--surface);
+    .wallet-summary {
+        margin: 20px 0;
+        padding:20px;
+    }
+}
+

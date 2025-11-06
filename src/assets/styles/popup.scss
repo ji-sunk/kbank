@@ -1,0 +1,541 @@
+/* Toast + BottomSheet + popup */
+
+/* ========================
+   BottomSheet
+   ======================== */
+.sheet {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--surface);
+  border-top-left-radius: 24px;
+  border-top-right-radius: 24px;
+  transform: translateY(100%);
+  transition: transform .28s ease;
+  z-index: 10;
+  box-shadow: 0 -8px 24px rgba(0,0,0,.12);
+  border: none;
+  padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px));
+  .m-footer-actions {
+    button {
+      border: none;
+       font-weight: 700;
+       height: 56px;
+    }
+    .btn--secondary {
+      background: var(--secondary);
+      color: #fff;
+    }
+    .btn--tertiary {
+
+    }
+  }
+}
+
+.sheet.open { transform: translateY(0); }
+
+.sheet-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 20px 8px;
+  .close {
+    color: var(--ink);
+  }
+}
+
+.sheet-body {
+  padding: 0 20px 0px;
+  max-height: 60vh;
+  overflow: auto;
+  .sub-tit {
+    font-weight: 500;
+    color: var(--ink);
+  }
+}
+
+.sheet-title { margin:0; font-size: 18px; font-weight: 700; }
+
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0 8px;
+}
+
+.chip {
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--line-border);
+  background: none;
+  color: var(--secondary);
+}
+
+.chip.on {
+  // font-weight: 700;
+  background: var(--chip-active);
+  color: #fff;
+  border-color: var(--chip-active);
+}
+
+.field-row {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  margin: 8px 0 16px;
+}
+
+.field {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.field input {
+  width: 100%;
+  padding: 6px 0;
+  border: none;
+  outline: none;
+  background: transparent;
+}
+
+.btn {
+  flex: 1;
+  padding: 16px;
+  border: none;
+  background: #eaeaea;
+}
+
+.btn--primary {
+  background: var(--darkgray);
+  color: #fff;
+  font-weight: 700;
+}
+
+/* SearchKeywordSheet (keyword 전용) */
+.keyword-sheet {
+  .ks-section + .ks-section { margin-top: 16px; }
+
+  /* 검색 인풋 박스 */
+  .search-field {}
+
+  .search-input {
+    position: relative;
+    display: block;
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: 2px;
+    background: var(--surface);
+    transition: box-shadow .16s ease, border-color .16s ease;
+
+    input {
+      width: 100%;
+      height: 44px;
+      padding: 0 44px 0 12px; /* 아이콘 공간 확보 */
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: var(--ink);
+      font-size: 14px;
+
+      &::placeholder { color: #9da3ae; } 
+    }
+
+    &:focus-within {
+      border-color: var(--brand);
+      box-shadow: 0 0 0 2px color-mix(in srgb, var(--brand, #111) 18%, transparent);
+    }
+
+    .search-btn {
+      position: absolute;
+      top: 50%;
+      right: 6px;
+      transform: translateY(-50%);
+      width: 36px;
+      height: 36px;
+      border: 0;
+      border-radius: 6px;
+      display: grid;
+      place-items: center;
+      background: transparent;
+      color: #666;
+      cursor: pointer;
+
+      &:hover { color: #333; }
+      &:disabled {
+        color: #bbb; 
+        cursor: default;
+      }
+    }
+  }
+}
+
+/* UsageSelectSheet - 사용처 선택 */
+.usage-sheet {
+  /* 상단 설명 */
+  .usage-desc {
+    margin: 0 0 16px;
+    font-size: 14px;
+    color: #8e8e8e;
+  }
+
+  /* 리스트 */
+  .usage-list {
+    display: grid;
+    gap: 4px;
+  }
+
+  .usage-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    min-height: 56px;
+    padding: 12px 40px 12px 4px; /* 체크 아이콘 오른쪽 여백 확보 */
+    background: transparent;
+    border: 0;
+    text-align: left;
+    cursor: pointer;
+    border-radius: 8px;
+
+    /* 포커스 표기 (키보드 접근성) */
+    &:focus-visible {
+      outline: 2px solid var(--brand, #111);
+      outline-offset: 2px;
+    }
+
+    /* 호버 피드백 */
+    &:hover {
+      background: #f7f7f7;
+    }
+
+    .usage-label {
+      font-size: 18px;
+      line-height: 1.5;
+      color: var(--ink, #1e1e1e);
+    }
+
+    .usage-check {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      // width: 24px;
+      // height: 24px;
+      color: #1e1e1e;
+      opacity: 0; /* 기본은 숨김 */
+      transition: opacity .15s ease;
+    }
+
+    &.is-selected {
+      .usage-label { font-weight: 800; }
+      .usage-check { opacity: 1; }
+    }
+  }
+}
+
+.sheet.sheet--round-xl {
+  border-top-left-radius: 36px;
+  border-top-right-radius: 36px;
+}
+
+
+
+
+/* ========================
+   Toast
+   ======================== */
+
+   /* 토스트 알림 (공용 Toast 컴포넌트 기반) */
+.toast.error {
+  background: #1d1d1d;
+  color: #fff;
+  border-radius: 24px;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 10px 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+.toast-stack {
+  padding:0 20px;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 20px;
+  display: grid;
+  place-items: center;
+  gap: 10px;
+  pointer-events: none;
+  z-index: 40;
+}
+
+.toast-item {
+  pointer-events: auto;
+  background: var(--chip-active);
+  color: #fff;
+  padding: 14px 18px;
+  border-radius: 999px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.2);
+  font-size: 14px;
+  animation: toastIn .22s ease;
+}
+
+@keyframes toastIn {
+  from { transform: translateY(10px); opacity: 0; }
+  to   { transform: translateY(0);  opacity: 1; }
+}
+
+/* ========================
+   레이어팝업
+   ======================== */
+
+/* 설정 버튼 컨테이너: 팝오버 기준점 */
+/* drawer 버튼 자체 */
+.drawer-setting-btn {
+  border: none;
+  background: transparent;
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  color: var(--ink);
+}
+
+.setting-popover--portal {
+  // padding:0 0.625rem;
+  position: fixed;
+  top: 50px;
+  left: 100px;
+  min-width: 147px;
+  // width: 150px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,.08);
+  z-index: 9999; 
+
+  .setting-popover__item {
+    width: 100%;
+    height: 44px;
+    font-size: 14px;
+    color: #1e1e1e;
+    border: 0;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+
+    &:not(:first-child) { border-top: 1px solid var(--line); }
+    &:hover { background: #f8f8f8; }
+    &:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+  }
+}
+
+/* === Header more popover (portal) === */
+.more-popover--portal {
+  position: absolute;
+  z-index: 100; 
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  box-shadow: 0 10px 24px rgba(0,0,0,.12);
+  padding: 6px 0;
+  pointer-events: auto;
+  width:150px;
+  // left:880px;
+  // top: 60px;
+}
+
+.more-popover__item {
+  width: 100%;
+  height: 40px;
+  padding: 0 14px;
+  background: transparent;
+  border: 0;
+  color: #1E1E1E;
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+
+  &:hover { background: #f6f6f6; }
+  &:active { background: #eee; }
+}
+
+/* ========================
+   Confirm Modal
+   ======================== */
+.confirm-modal {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 100; // overlay 위로
+
+  &__panel {
+    width: min(92vw, 360px);
+    background: var(--surface);
+    // border-radius: 12px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+    overflow: hidden;
+    animation: fadeInScale 0.2s ease;
+  }
+
+  &__body {
+    padding: 24px 20px;
+    text-align: left;
+  }
+
+  &__title {
+    margin: 0 0 10px;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  &__msg {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--ink);
+  }
+
+  &__actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-top: 1px solid var(--line);
+
+    /* 중복 선택자 정리: 버튼 라운드 초기화 여기로 통합 */
+    button { border-radius: 0 !important; }
+  }
+
+  &__btn {
+    height: 52px;
+    border: none;
+    font-size: .875rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: background 0.2s;
+
+    &--cancel {
+      background: #f2f2f2;
+      color: #666;
+      // border-right: 1px solid var(--line);
+    }
+
+    &--confirm {
+      background: #666;
+      color: #fff;
+    }
+
+    &:hover { filter: brightness(0.95); }
+  }
+}
+
+@keyframes fadeInScale {
+  from { opacity: 0; transform: scale(0.97); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* ========================
+   AlertModal (generic 1버튼 모달)
+   ======================== */
+.sheet-backdrop {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(0,0,0,.45);
+  z-index: 120; /* confirm-modal 보다 위 */
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .18s ease;
+}
+.sheet-backdrop.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.popup-card {
+  width: min(92vw, 360px);
+  background: var(--surface);
+  // border: 1px solid var(--line);
+  // border-radius: 12px;
+  box-shadow: 0 12px 32px rgba(0,0,0,.18);
+  overflow: hidden;
+  animation: fadeInScale .18s ease;
+}
+
+.popup-head {
+  padding: 16px 20px 0px;
+}
+.popup-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.popup-body {
+  padding: 20px 20px 40px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--ink);
+}
+
+.popup-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-top: 1px solid var(--line);
+
+  /* 프로젝트 공통 액션 버튼 규격 사용 */
+  .action {
+    height: 52px;
+    border: 0;
+    border-radius: 0;
+    font-size: .875rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: filter .15s ease;
+    &:hover { filter: brightness(.97); }
+  }
+  /* 1버튼 모드 */
+  &.one { grid-template-columns: 1fr; }
+}
+
+/* 기존 토큰을 사용하는 버튼 컬러 */
+.action--secondary { background: var(--secondary); color:#fff; }
+
+@keyframes fadeInScale {
+  from { opacity: 0; transform: scale(.97); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+// 추가
+/* ===== Toast (기본은 유지) ===== */
+
+/* ✔ 인풋 에러와 동일한 컬러/톤 */
+.toast-item.is-error,
+.toast-item[data-variant="error"] {
+  background: var(--error);
+  color: #fff;
+}
+
+/* (선택) 성공/정보도 미리 정의 */
+.toast-item.is-success,
+.toast-item[data-variant="success"] { background: var(--darkgray); color: #fff; }
+.toast-item.is-info,
+.toast-item[data-variant="info"]     { background: var(--chip-active); color: #fff; }
+

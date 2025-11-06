@@ -1,0 +1,263 @@
+/* =========================
+   Common (inputs / errors / utils)
+   ========================= */
+
+/* 단일 필드 컨테이너 + 라벨 + 인풋 (로그인/OTP/비번변경 공통) */
+.form-field {
+  display: grid;
+  gap: 6px;
+  position: relative;
+
+  .field-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--secondary);
+  }
+
+  input {
+    height: 44px;
+    padding: 0 12px;
+    border: 1px solid var(--line-border);
+    border-radius: 6px;
+    background: var(--surface);
+    color: var(--ink);
+    font-size: 15px;
+    outline: none;
+    transition: border-color .18s ease, box-shadow .18s ease;
+
+    &::placeholder { color: var(--secondary); }
+    &:focus {
+      border-color: var(--primary-bl);
+      box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary-bl) 22%, transparent);
+    }
+  }
+
+  /* 에러 상태 (빨간 테두리 + 연분홍 배경) */
+  &.error input,
+  &.is-error input {
+    border-color: var(--danger);
+    background: var(--danger-sub);
+    box-shadow: none;
+  }
+
+  .err-text {
+    margin: 0px;
+    font-size: 13px;
+    color: var(--danger);
+  }
+}
+
+/* 입력 지우기(X) 버튼 포함 인풋 래퍼 */
+.input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  input {
+    flex: 1;
+    padding-right: 36px; /* clear-btn 공간 */
+  }
+  .clear-btn {
+    padding:0;
+    position: absolute;
+    right: 10px; top: 50%;
+    transform: translateY(-50%);
+    width: 22px; height: 22px;
+    display: grid; place-items: center;
+    border: 0; border-radius: 999px;
+    background: var(--darkgray); color: #fff;
+    font-size: 13px; line-height: 1;
+    cursor: pointer;
+  }
+}
+
+/* 플로팅 라벨 변형 (로그인 ID 필드 등에서 사용) */
+.input-wrap.float {
+  input {
+    height: 48px;
+    padding: 18px 44px 10px 12px;
+  }
+  .float-label {
+    position: absolute;
+    left: 12px; top: 14px;
+    font-size: 15px; color: var(--secondary);
+    pointer-events: none;
+    transform-origin: left top;
+    transition: transform .14s ease, color .14s ease, top .14s ease, font-size .14s ease;
+  }
+  &.has-value .float-label,
+  &:focus-within .float-label {
+    top: 6px; font-size: 10px; color: var(--secondary);
+  }
+}
+
+/* 공용 토스트(로그인 톤에 맞춘 에러 스킨) */
+.toast.error {
+  background: var(--black);
+  color: var(--surface);
+  border-radius: 24px;
+  font-size: 14px; font-weight: 500;
+  padding: 10px 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.25);
+}
+
+/* 체크/유틸 */
+.form-util {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 14px; color: var(--secondary);
+
+  .chk-save {
+    display: inline-flex; gap: 6px; align-items: center;
+    input { width: 16px; height: 16px; }
+  }
+}
+
+/* =========================
+   Login
+   ========================= */
+
+.login-wrap {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  background: var(--bg);
+  font-family: var(--font-sans);
+}
+
+.login-card {
+  width: 360px;
+  background: var(--surface);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  padding: 40px 32px;
+}
+
+.login-title {
+  margin: 0;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  .login-logo { width: 28px; height: 28px; }
+  .bank-name { font-size: 28px; font-weight: 700; color: var(--ink); }
+}
+.system-name {
+  margin: 12px 0 40px;
+  display: flex; justify-content: center;
+  font-size: 18px; font-weight: 400; color: var(--ink);
+}
+
+.login-form { display: grid; gap: 16px; }
+
+.btn-login {
+  height: 50px;
+  border: 0; border-radius: 6px;
+  background: var(--black); color: var(--surface);
+  font-size: 16px; font-weight: 600;
+  cursor: pointer; transition: background .18s ease;
+
+  &:hover { background: #1b1b1b; }
+  &:focus-visible { outline: 2px solid var(--primary-bl); outline-offset: 2px; }
+}
+
+.login-links {
+  margin-top: 16px; text-align: center; font-size: 14px;
+  a {
+    color: var(--brand); text-decoration: none;
+    &:hover { text-decoration: underline; color: var(--primary-bl); }
+    &:focus-visible { outline: 2px solid var(--primary-bl); outline-offset: 2px; border-radius: 2px; }
+  }
+  .bar { margin: 0 6px; color: var(--secondary); }
+}
+
+/* =========================
+   2FA / OTP
+   ========================= */
+
+.otp-wrap {
+  min-height: 100vh;
+  display: grid; place-items: center;
+  background: var(--surface);
+}
+
+.otp-area {
+  width: 100%; max-width: 520px;
+  height: 100vh;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 0 20px; background: var(--surface);
+}
+
+.otp-title {
+  margin: 0; padding: 40px 20px;
+  text-align: center; font-size: 22px; font-weight: 700; color: var(--ink);
+}
+
+.otp-form { width: 100%; gap: 18px; }
+
+.otp-field {
+  display: flex; flex-direction: column; gap: 8px; width: 100%;
+
+  .otp-label { font-size: 14px; color: var(--secondary); }
+
+  input {
+    height: 44px; padding: 0 12px;
+    border: 1px solid var(--line-border); border-radius: 6px;
+    font-size: 18px; letter-spacing: .2em; /* 가독성 */
+    background: var(--surface); color: var(--ink);
+    outline: none; transition: border-color .15s, box-shadow .15s;
+    &::placeholder { color: var(--secondary); letter-spacing: 0; font-size: 14px; }
+    &:focus { border-color: var(--primary-bl);
+      box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary-bl) 20%, transparent); }
+  }
+
+  .otp-help  { margin: 2px 0 0; text-align: center; color: var(--brand); }
+  .otp-error { margin: 4px 0 0; font-size: 13px; color: var(--danger); }
+
+  &.is-error input { border-color: var(--danger); background: var(--danger-sub); box-shadow: none; }
+}
+
+.otp-actions {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+  .btn {
+    height: 48px; border: 0; font-weight: 700; font-size: 15px; border-radius: 0; cursor: pointer;
+    &--light { background: var(--line); color: var(--ink); border-right: 1px solid var(--line-border); }
+    &--dark  { background: var(--darkgray); color: #fff; }
+  }
+}
+
+/* =========================
+   초기 비밀번호 변경 (Auth 공통)
+   ========================= */
+
+.auth-wrap {
+  min-height: 100vh;
+  display: grid; place-content: start center;
+  padding: 24px 20px 32px;
+  background: var(--surface);
+}
+
+.auth-area {
+  width: min(520px, 100%);
+  background: var(--surface);
+  // padding: 24px 20px 32px;
+}
+
+.auth-title {
+  margin: 8px 0 10px;
+  font-size: 28px; font-weight: 800; text-align: center; color: var(--ink);
+}
+
+.auth-sub {
+  margin: 0 0 20px;
+  color: var(--muted); text-align: center; line-height: 1.6;
+}
+
+.auth-form { display: grid; gap: 16px; }
+
+.auth-actions { margin-top: 8px; display: grid; }
+.auth-btn {
+  width: 100%; height: 48px; border: 0; border-radius: 6px;
+  font-weight: 700; cursor: pointer;
+  &.auth-btn--dark { background: var(--darkgray); color: #fff; }
+}
+
+.auth-hint {
+  margin-top: 10px; color: var(--secondary); font-size: 14px; line-height: 1.6; word-break: keep-all;
+}
